@@ -29,8 +29,14 @@ const MONTHS = ['Январь', 'Февраль', 'Март', 'Апрель', '�
 const KEY = 'finance.v1';
 
 const $ = (s) => document.querySelector(s);
-const money = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 2, minimumFractionDigits: 0 });
-const fmt = (n) => money.format(n);
+// Белорусский рубль. Формат одинаковый во всех браузерах: «1 250,50 BYN».
+const CURRENCY = 'BYN';
+const numInt = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 0 });
+const numDec = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n) => {
+  const r = Math.round(n * 100) / 100;
+  return (Number.isInteger(r) ? numInt : numDec).format(r) + ' ' + CURRENCY;
+};
 const catOf = (type, id) => CATS[type].find((c) => c.id === id) || CATS[type][CATS[type].length - 1];
 const pad = (n) => String(n).padStart(2, '0');
 const isoToday = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };

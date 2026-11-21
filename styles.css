@@ -143,7 +143,7 @@ main { max-width: 640px; margin: 0 auto; padding: 4px 16px; }
   width: 100%; max-width: 260px; border: 0; background: none; outline: none;
   font-size: 44px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums;
 }
-.amount-field span { font-size: 32px; color: var(--muted); font-weight: 600; }
+.amount-field span { font-size: 24px; color: var(--muted); font-weight: 600; }
 
 .cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
 .cat {
