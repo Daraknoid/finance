@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Мои финансы</title>
+  <meta name="description" content="Учёт доходов и расходов">
+  <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Финансы">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn" id="prevMonth" aria-label="Предыдущий месяц">‹</button>
+    <h1 id="monthTitle">—</h1>
+    <button class="icon-btn" id="nextMonth" aria-label="Следующий месяц">›</button>
+    <button class="icon-btn settings" id="openSettings" aria-label="Настройки">⚙︎</button>
+  </header>
+
+  <main>
+    <section class="card summary">
+      <div class="balance-label">Баланс за месяц</div>
+      <div class="balance" id="balance">0 ₽</div>
+      <div class="split">
+        <div><span class="dot inc"></span>Доходы<br><b id="incomeSum">0 ₽</b></div>
+        <div><span class="dot exp"></span>Расходы<br><b id="expenseSum">0 ₽</b></div>
+      </div>
+      <div class="budget" id="budgetBox" hidden>
+        <div class="budget-row"><span>Бюджет на расходы</span><span id="budgetText"></span></div>
+        <div class="bar"><div class="bar-fill" id="budgetFill"></div></div>
+      </div>
+      <div class="total-balance">Всего на счету: <b id="totalBalance">0 ₽</b></div>
+    </section>
+
+    <section class="card" id="chartCard">
+      <h2>Расходы по категориям</h2>
+      <div class="chart-wrap">
+        <svg viewBox="0 0 42 42" class="donut" id="donut" aria-hidden="true"></svg>
+        <ul class="legend" id="legend"></ul>
+      </div>
+    </section>
+
+    <section class="list-section">
+      <div class="seg" role="tablist">
+        <button class="seg-btn active" data-filter="all">Все</button>
+        <button class="seg-btn" data-filter="expense">Расходы</button>
+        <button class="seg-btn" data-filter="income">Доходы</button>
+      </div>
+      <div id="txList"></div>
+      <p class="empty" id="emptyMsg">Пока нет операций за этот месяц.<br>Нажмите «+», чтобы добавить.</p>
+    </section>
+  </main>
+
+  <button class="fab" id="addBtn" aria-label="Добавить операцию">+</button>
+
+  <!-- Add / edit sheet -->
+  <div class="backdrop" id="txBackdrop" hidden>
+    <form class="sheet" id="txForm" autocomplete="off">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <button type="button" class="link" data-close>Отмена</button>
+        <h3 id="txFormTitle">Новая операция</h3>
+        <button type="submit" class="link strong">Готово</button>
+      </div>
+      <div class="seg type-seg">
+        <button type="button" class="seg-btn active" data-type="expense">Расход</button>
+        <button type="button" class="seg-btn" data-type="income">Доход</button>
+      </div>
+      <label class="amount-field">
+        <input id="amount" type="text" inputmode="decimal" placeholder="0" required>
+        <span>₽</span>
+      </label>
+      <div class="cats" id="catGrid"></div>
+      <div class="group">
+        <label class="row"><span>Дата</span><input id="date" type="date" required></label>
+        <label class="row"><span>Заметка</span><input id="note" type="text" placeholder="необязательно" maxlength="80"></label>
+      </div>
+      <button type="button" class="danger-btn" id="deleteTx" hidden>Удалить операцию</button>
+    </form>
+  </div>
+
+  <!-- Settings sheet -->
+  <div class="backdrop" id="setBackdrop" hidden>
+    <div class="sheet">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <span></span>
+        <h3>Настройки</h3>
+        <button type="button" class="link strong" data-close>Готово</button>
+      </div>
+      <div class="group">
+        <label class="row"><span>Бюджет на месяц, ₽</span><input id="budgetInput" type="text" inputmode="decimal" placeholder="не задан"></label>
+      </div>
+      <p class="hint">Данные хранятся только на этом телефоне. Регулярно делайте резервную копию.</p>
+      <div class="group">
+        <button type="button" class="row btn-row" id="exportJson">Сохранить резервную копию (JSON)</button>
+        <button type="button" class="row btn-row" id="importJsonBtn">Восстановить из копии</button>
+        <button type="button" class="row btn-row" id="exportCsv">Экспорт в таблицу (CSV)</button>
+      </div>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+      <div class="group">
+        <button type="button" class="row btn-row danger" id="clearAll">Удалить все данные</button>
+      </div>
+      <p class="hint center" id="countInfo"></p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
