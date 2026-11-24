@@ -27,6 +27,7 @@
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
 html, body { margin: 0; }
 body {
   background: var(--bg);
@@ -171,3 +172,44 @@ main { max-width: 640px; margin: 0 auto; padding: 4px 16px; }
   background: rgba(30,30,30,.92); color: #fff; padding: 10px 16px; border-radius: 20px;
   font-size: 14px; z-index: 20; max-width: calc(100% - 32px); text-align: center;
 }
+
+/* ---------- Сканирование чека ---------- */
+.fab-scan {
+  position: fixed; right: calc(max(20px, env(safe-area-inset-right)) + 72px); bottom: calc(26px + env(safe-area-inset-bottom));
+  width: 48px; height: 48px; border-radius: 24px; font-size: 22px; line-height: 1;
+  background: var(--card); box-shadow: 0 4px 14px rgba(0,0,0,.18); z-index: 6;
+}
+.fab-scan:active { transform: scale(.94); }
+
+.receipt { display: flex; gap: 12px; padding: 10px 14px; align-items: center; }
+.receipt-thumb { width: 72px; height: 96px; border-radius: 8px; overflow: hidden; flex: none; background: var(--fill); padding: 0; }
+.receipt-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.receipt-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 0; min-width: 0; }
+.receipt-actions .link { padding: 5px 0; text-align: left; }
+.link.danger { color: var(--exp); }
+
+.viewer { align-items: center; background: rgba(0,0,0,.92); padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+.viewer img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+/* ---------- Категории ---------- */
+.cat .cn { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+.cat.add { color: var(--accent); border: 2px dashed var(--sep); background: transparent; }
+.cat-row { justify-content: flex-start; text-align: left; }
+.cat-row:active { background: var(--fill); }
+.cat-row .tx-ico { width: 32px; height: 32px; font-size: 17px; }
+.cat-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.muted { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.chev { color: var(--muted); font-size: 20px; line-height: 1; }
+#openCats { justify-content: space-between; }
+
+.ce-preview { display: flex; justify-content: center; margin: 4px 0 14px; }
+.ce-emoji {
+  width: 76px; height: 76px; border-radius: 22px; border: 0; outline: none;
+  text-align: center; font-size: 40px; background: var(--fill); caret-color: transparent;
+}
+.swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; background: var(--card); border-radius: 12px; padding: 12px; margin-bottom: 14px; justify-items: center; }
+.swatch { width: 34px; height: 34px; border-radius: 17px; border: 3px solid transparent; box-shadow: inset 0 0 0 2px var(--card); }
+.swatch.active { border-color: var(--text); }
+.emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; background: var(--card); border-radius: 12px; padding: 8px; margin-bottom: 14px; }
+.emoji-grid button { font-size: 24px; padding: 6px 0; border-radius: 8px; }
+.emoji-grid button:active { background: var(--fill); }

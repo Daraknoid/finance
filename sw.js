@@ -1,5 +1,5 @@
 // Офлайн-кэш. При изменении файлов приложения увеличьте номер версии.
-const CACHE = 'finance-v2';
+const CACHE = 'finance-v3';
 const ASSETS = [
   './',
   'index.html',
@@ -27,7 +27,8 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET' || new URL(e.request.url).origin !== location.origin) return;
   e.respondWith(
-    fetch(e.request)
+    // no-cache: всегда спрашиваем сервер, нет ли новой версии (иначе HTTP-кэш отдаёт старую)
+    fetch(e.request, { cache: 'no-cache' })
       .then((res) => {
         const copy = res.clone();
         caches.open(CACHE).then((c) => c.put(e.request, copy));

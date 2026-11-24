@@ -54,13 +54,14 @@
         <button class="seg-btn" data-filter="income">Доходы</button>
       </div>
       <div id="txList"></div>
-      <p class="empty" id="emptyMsg">Пока нет операций за этот месяц.<br>Нажмите «+», чтобы добавить.</p>
+      <p class="empty" id="emptyMsg">Пока нет операций за этот месяц.<br>Нажмите «+», чтобы добавить, или 🧾, чтобы отсканировать чек.</p>
     </section>
   </main>
 
+  <button class="fab-scan" id="scanBtn" aria-label="Сканировать чек">🧾</button>
   <button class="fab" id="addBtn" aria-label="Добавить операцию">+</button>
 
-  <!-- Add / edit sheet -->
+  <!-- Операция: добавление / изменение -->
   <div class="backdrop" id="txBackdrop" hidden>
     <form class="sheet" id="txForm" autocomplete="off">
       <div class="grabber"></div>
@@ -74,7 +75,7 @@
         <button type="button" class="seg-btn" data-type="income">Доход</button>
       </div>
       <label class="amount-field">
-        <input id="amount" type="text" inputmode="decimal" placeholder="0" required>
+        <input id="amount" type="text" inputmode="decimal" placeholder="0">
         <span>BYN</span>
       </label>
       <div class="cats" id="catGrid"></div>
@@ -82,11 +83,25 @@
         <label class="row"><span>Дата</span><input id="date" type="date" required></label>
         <label class="row"><span>Заметка</span><input id="note" type="text" placeholder="необязательно" maxlength="80"></label>
       </div>
+      <div class="group">
+        <div class="row" id="receiptEmpty">
+          <span>Чек</span>
+          <button type="button" class="link" id="attachReceipt">📷 Добавить фото</button>
+        </div>
+        <div class="receipt" id="receiptPreview" hidden>
+          <button type="button" class="receipt-thumb" id="receiptThumbBtn" aria-label="Открыть чек"><img id="receiptThumb" alt="Фото чека"></button>
+          <div class="receipt-actions">
+            <button type="button" class="link" id="scanAgain">🔍 Распознать сумму</button>
+            <button type="button" class="link" id="replaceReceipt">Заменить фото</button>
+            <button type="button" class="link danger" id="removeReceipt">Убрать</button>
+          </div>
+        </div>
+      </div>
       <button type="button" class="danger-btn" id="deleteTx" hidden>Удалить операцию</button>
     </form>
   </div>
 
-  <!-- Settings sheet -->
+  <!-- Настройки -->
   <div class="backdrop" id="setBackdrop" hidden>
     <div class="sheet">
       <div class="grabber"></div>
@@ -97,20 +112,75 @@
       </div>
       <div class="group">
         <label class="row"><span>Бюджет на месяц, BYN</span><input id="budgetInput" type="text" inputmode="decimal" placeholder="не задан"></label>
+        <button type="button" class="row btn-row" id="openCats"><span>Категории</span><span class="chev">›</span></button>
       </div>
-      <p class="hint">Данные хранятся только на этом телефоне. Регулярно делайте резервную копию.</p>
+      <div class="group">
+        <button type="button" class="row btn-row" id="importCsvBtn">Импорт из таблицы (CSV)</button>
+        <button type="button" class="row btn-row" id="exportCsv">Экспорт в таблицу (CSV)</button>
+      </div>
+      <p class="hint">Импорт понимает колонки «Дата», «Сумма», «Тип», «Категория», «Заметка» (как в экспорте), а также выписки с отрицательными суммами для расходов. Из Excel: «Сохранить как → CSV».</p>
+      <p class="hint">Данные и фото чеков хранятся только на этом телефоне. Регулярно делайте резервную копию.</p>
       <div class="group">
         <button type="button" class="row btn-row" id="exportJson">Сохранить резервную копию (JSON)</button>
         <button type="button" class="row btn-row" id="importJsonBtn">Восстановить из копии</button>
-        <button type="button" class="row btn-row" id="exportCsv">Экспорт в таблицу (CSV)</button>
       </div>
-      <input type="file" id="importFile" accept=".json,application/json" hidden>
       <div class="group">
         <button type="button" class="row btn-row danger" id="clearAll">Удалить все данные</button>
       </div>
       <p class="hint center" id="countInfo"></p>
     </div>
   </div>
+
+  <!-- Список категорий -->
+  <div class="backdrop" id="catBackdrop" hidden>
+    <div class="sheet">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <span></span>
+        <h3>Категории</h3>
+        <button type="button" class="link strong" data-close>Готово</button>
+      </div>
+      <div class="seg" id="catTypeSeg">
+        <button type="button" class="seg-btn active" data-type="expense">Расходы</button>
+        <button type="button" class="seg-btn" data-type="income">Доходы</button>
+      </div>
+      <div class="group" id="catList"></div>
+      <div class="group">
+        <button type="button" class="row btn-row" id="addCat">＋ Добавить категорию</button>
+      </div>
+      <p class="hint">Нажмите на категорию, чтобы переименовать, сменить значок или удалить. При удалении операции переходят в «Другое».</p>
+    </div>
+  </div>
+
+  <!-- Редактирование категории -->
+  <div class="backdrop" id="catEditBackdrop" hidden>
+    <form class="sheet" id="catEditForm" autocomplete="off">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <button type="button" class="link" data-close>Отмена</button>
+        <h3 id="ceTitle">Категория</h3>
+        <button type="submit" class="link strong">Сохранить</button>
+      </div>
+      <div class="ce-preview">
+        <input id="ceEmoji" class="ce-emoji" type="text" maxlength="8" aria-label="Значок">
+      </div>
+      <div class="group">
+        <label class="row"><span>Название</span><input id="ceName" type="text" maxlength="24" placeholder="например, Спорт"></label>
+      </div>
+      <div class="swatches" id="ceColors"></div>
+      <div class="emoji-grid" id="ceEmojiGrid"></div>
+      <button type="button" class="danger-btn" id="ceDelete" hidden>Удалить категорию</button>
+    </form>
+  </div>
+
+  <!-- Просмотр чека -->
+  <div class="backdrop viewer" id="viewBackdrop" hidden>
+    <img id="viewImg" alt="Фото чека" data-close>
+  </div>
+
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
+  <input type="file" id="csvFile" accept=".csv,text/csv,text/plain" hidden>
+  <input type="file" id="receiptFile" accept="image/*" hidden>
 
   <div class="toast" id="toast" hidden></div>
 
