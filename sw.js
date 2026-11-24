@@ -1,10 +1,11 @@
 // Офлайн-кэш. При изменении файлов приложения увеличьте номер версии.
-const CACHE = 'finance-v3';
+const CACHE = 'finance-v4';
 const ASSETS = [
   './',
   'index.html',
   'styles.css',
   'app.js',
+  'stats.js',
   'manifest.webmanifest',
   'icons/icon-192.png',
   'icons/icon-512.png',
